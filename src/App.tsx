@@ -1,10 +1,11 @@
 import React from 'react';
 import './App.scss';
+import Menu from './components/Menu';
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <h1>Hello, React with TypeScript and SCSS!</h1>
+      <Menu />
     </div>
   );
 };
