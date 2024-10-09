@@ -2,32 +2,50 @@
   ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 
     li {
       padding: 8px;
-      cursor: pointer;
       position: relative;
 
-      &:hover > .submenu {
+      button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 8px;
         display: block;
       }
 
       .submenu {
-        display: none;
-        position: absolute;
-        left: 100%;
-        top: 0;
-        background-color: #f9f9f9;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        list-style-type: none;
         padding: 0;
-
-        li {
-          padding: 8px;
-          cursor: pointer;
-        }
+        margin-top: 8px;
+        background-color: #f9f9f9;
+        list-style-type: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: absolute;
+        left: 100%; /* Moves submenus to the right */
+        top: 0;
+        z-index: 10;
       }
     }
+  }
+
+  .image-upload-btn {
+    cursor: pointer;
+    padding: 2px;
+    color: black;
+    border: none;
+    border-radius: 5px;
+  }
+
+  /* Ensure submenus are styled as dropdowns */
+  .submenu {
+    display: none; /* Hide by default */
+  }
+
+  li:hover > .submenu {
+    display: block; /* Show submenu when parent is hovered */
   }
 }
 
