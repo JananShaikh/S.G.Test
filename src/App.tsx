@@ -43,11 +43,6 @@ const App: React.FC = () => {
           onImageSelect={handleImageSelect} 
           onOpenWorkspace={openWorkspaceModal} // Pass function to Menu
         />
-        {selectedImage && (
-          <div className="image-frame">
-            <img src={selectedImage} alt="Selected" />
-          </div>
-        )}
         {showModal && (
           <div className="modal">
             <div className="modal-content">
