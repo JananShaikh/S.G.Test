@@ -13,6 +13,7 @@ interface Region {
   y: number;
   width: number;
   height: number;
+  shape: 'rectangle' | 'circle'; // Add shape type to the region
 }
 
 const mockWorkspaces: Workspace[] = [
@@ -23,6 +24,7 @@ const mockWorkspaces: Workspace[] = [
 
 const App: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+ 
   const [showModal, setShowModal] = useState(false);
   const [workspaces, setWorkspaces] = useState<Workspace[]>(mockWorkspaces);
   
@@ -31,7 +33,7 @@ const App: React.FC = () => {
   const [drawing, setDrawing] = useState(false);
   const [currentRegion, setCurrentRegion] = useState<Region | null>(null);
   
-  const [shapeType, setShapeType] = useState('rectangle');
+  const [shape, setShape] = useState<'rectangle' | 'circle'>('rectangle'); // Track selected shape
   
   const openWorkspaceModal = () => {
     setShowModal(true);
@@ -43,7 +45,10 @@ const App: React.FC = () => {
 
   const handleWorkspaceSelect = (workspace: Workspace) => {
     setSelectedImage(workspace.imageUrl); // Set the image URL of the selected workspace selected workspace
+    setRegions([]); // Clear regions when a new image is selected
+    clearCanvas(); // Ensure the canvas is cleared when a new image is selected
     closeModal(); // Close modal after selecting
+    
   };
   
   // Function to handle the image change passed from Menu
@@ -74,7 +79,7 @@ const App: React.FC = () => {
       const startY = event.clientY - rect.top;
 
       setDrawing(true);
-      setCurrentRegion({ x: startX, y: startY, width: 0, height: 0 });
+      setCurrentRegion({ x: startX, y: startY, width: 0, height: 0, shape});
     }
   };
   
@@ -111,11 +116,23 @@ const App: React.FC = () => {
       const ctx = canvas.getContext('2d');
       if (ctx && selectedImage) {
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = 2;
 
         regionsToDraw.forEach(region => {
-          ctx.strokeRect(region.x, region.y, region.width, region.height); // Draw each region
+          ctx.strokeStyle = 'red';
+          ctx.lineWidth = 2;
+
+          if (region.shape === 'rectangle') {
+            // Draw rectangle
+            ctx.strokeRect(region.x, region.y, region.width, region.height);
+          } else if (region.shape === 'circle') {
+            // Draw circle (using the smallest dimension for radius)
+            const radius = Math.min(Math.abs(region.width), Math.abs(region.height)) / 2;
+            const centerX = region.x + region.width / 2;
+            const centerY = region.y + region.height / 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+          }
         });
       }
     }
@@ -124,13 +141,7 @@ const App: React.FC = () => {
   // Reset Regions: This function clears the regions from the state and redraws the canvas.
   const resetRegions = () => {
     setRegions([]); // Clear the regions state
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-      }
-    }
+    clearCanvas(); // Clear the canvas
   };
 
   return (
@@ -186,12 +197,25 @@ const App: React.FC = () => {
       {/* Add a Reset Button */}
       <button onClick={resetRegions}>Reset Regions</button>
       
-      <div>
-        <label>Shape: </label>
-        <select value={shapeType} onChange={(e) => setShapeType(e.target.value)}>
-          <option value="rectangle">Rectangle</option>
-          <option value="circle">Circle</option>
-        </select>
+      <div className="controls">
+        <label>
+          <input
+            type="radio"
+            value="rectangle"
+            checked={shape === 'rectangle'}
+            onChange={() => setShape('rectangle')}
+          />
+          Rectangle
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="circle"
+            checked={shape === 'circle'}
+            onChange={() => setShape('circle')}
+          />
+          Circle
+        </label>
       </div>
     
     </div>
