@@ -93,5 +93,17 @@
   }
 }
 
+.image-container {
+  position: relative;
+  img {
+    width: 500px;
+    height: 400px;
+  }
+}
+
+canvas {
+  cursor: crosshair;
+}
+
 
 
