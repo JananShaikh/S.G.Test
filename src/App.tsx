@@ -35,6 +35,24 @@ const App: React.FC = () => {
   
   const [shape, setShape] = useState<'rectangle' | 'circle'>('rectangle'); // Track selected shape
   
+  // New: Function to commit images
+  const commitImages = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/commit-images', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        alert('Images committed successfully');
+      } else {
+        alert('Failed to commit images');
+      }
+    } catch (error) {
+      console.error('Error committing images:', error);
+    }
+  };
+  
+  
   const openWorkspaceModal = () => {
     setShowModal(true);
   };
@@ -217,6 +235,9 @@ const App: React.FC = () => {
           Circle
         </label>
       </div>
+      
+      {/* Add a button to commit images */}
+      <button onClick={commitImages}>Commit Images</button>
     
     </div>
   );
